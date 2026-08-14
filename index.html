@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Luna Marea — Radio Nocturna</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,600;1,9..144,500&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #0b0c14;
+    --bg-alt: #12131f;
+    --panel: #15161f;
+    --amber: #e8a33d;
+    --amber-dim: #a9782f;
+    --violet: #6b5b95;
+    --rose: #c97064;
+    --cream: #f2efe9;
+    --dim: #8a8794;
+    --line: rgba(242,239,233,0.12);
+    --line-strong: rgba(242,239,233,0.22);
+  }
+
+  *{ box-sizing: border-box; }
+  html{ scroll-behavior: smooth; }
+
+  body{
+    margin:0;
+    background: var(--bg);
+    color: var(--cream);
+    font-family: "Space Grotesk", sans-serif;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  /* grano de fondo */
+  body::before{
+    content:"";
+    position: fixed;
+    inset:0;
+    pointer-events:none;
+    z-index: 2;
+    opacity: 0.05;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  a{ color: inherit; text-decoration: none; }
+
+  :focus-visible{
+    outline: 2px solid var(--amber);
+    outline-offset: 3px;
+  }
+
+  .wrap{
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 0 32px;
+  }
+
+  /* ---------- NAV ---------- */
+  header{
+    position: sticky;
+    top:0;
+    z-index: 20;
+    background: linear-gradient(to bottom, rgba(11,12,20,0.96), rgba(11,12,20,0.7));
+    backdrop-filter: blur(6px);
+    border-bottom: 1px solid var(--line);
+  }
+  nav{
+    display:flex;
+    align-items:center;
+    justify-content: space-between;
+    padding: 20px 0;
+  }
+  .logo{
+    font-family:"Fraunces", serif;
+    font-weight: 600;
+    font-size: 1.3rem;
+    letter-spacing: 0.02em;
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .logo-dot{
+    width:9px; height:9px; border-radius:50%;
+    background: var(--amber);
+    box-shadow: 0 0 10px 2px rgba(232,163,61,0.6);
+  }
+  .nav-links{
+    display:flex;
+    gap: 34px;
+    font-size: 0.85rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--dim);
+  }
+  .nav-links a{ position:relative; padding: 4px 0; transition: color .25s; }
+  .nav-links a:hover{ color: var(--cream); }
+  .nav-links a::after{
+    content:"";
+    position:absolute; left:0; bottom:-2px;
+    width:0; height:1px; background: var(--amber);
+    transition: width .3s ease;
+  }
+  .nav-links a:hover::after{ width:100%; }
+
+  /* ---------- HERO ---------- */
+  
+  .eyebrow .bars span:nth-child(1){ animation-delay: 0s; }
+  .eyebrow .bars span:nth-child(2){ animation-delay: .2s; }
+  .eyebrow .bars span:nth-child(3){ animation-delay: .4s; }
+  .eyebrow .bars span:nth-child(4){ animation-delay: .1s; }
+  @keyframes eq{
+    0%,100%{ height: 3px; }
+    50%{ height: 12px; }
+  }
+
+  h1.title{
+    font-family: "Fraunces", serif;
+    font-weight: 500;
+    font-size: clamp(3rem, 7vw, 5.6rem);
+    line-height: 0.98;
+    margin: 0 0 26px;
+  }
+  h1.title em{
+    font-style: italic;
+    font-weight: 300;
+    color: var(--rose);
+  }
+
+  .hero p.lead{
+    max-width: 46ch;
+    color: var(--dim);
+    font-size: 1.05rem;
+    line-height: 1.65;
+    margin: 0 0 34px;
+  }
+
+  .btn-row{ display:flex; gap:16px; flex-wrap: wrap; }
+  .btn{
+    display:inline-flex;
+    align-items:center;
+    gap:10px;
+    padding: 14px 26px;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    transition: all .25s ease;
+    border: 1px solid var(--line-strong);
+  }
+  .btn-primary{
+    background: var(--amber);
+    color: #0b0c14;
+    border-color: var(--amber);
+    font-weight: 600;
+  }
+  .btn-primary:hover{ background: #f3b757; transform: translateY(-1px); }
+  .btn-ghost{ color: var(--cream); }
+  .btn-ghost:hover{ border-color: var(--cream); }
+
+  /* vinilo */
+  .vinyl-stage{
+    position: relative;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+  }
+  .vinyl{
+    width: min(360px, 80vw);
+    height: min(360px, 80vw);
+    border-radius: 50%;
+    position: relative;
+    animation: spin 9s linear infinite;
+    background:
+      repeating-radial-gradient(circle at center,
+        #1a1b28 0px, #1a1b28 2px,
+        #0e0f18 3px, #0e0f18 4px);
+    box-shadow: 0 30px 70px -20px rgba(0,0,0,0.7), 0 0 0 1px var(--line);
+  }
+  .vinyl::before{
+    content:"";
+    position:absolute; inset:0;
+    border-radius:50%;
+    background: conic-gradient(from 0deg, rgba(255,255,255,0.06), transparent 30%, rgba(255,255,255,0.04) 55%, transparent 80%);
+  }
+  .vinyl-label{
+    position:absolute; inset: 34%;
+    border-radius:50%;
+    background: radial-gradient(circle at 35% 30%, var(--rose), var(--violet) 70%);
+    display:flex; align-items:center; justify-content:center;
+    text-align:center;
+    box-shadow: inset 0 0 20px rgba(0,0,0,0.35);
+  }
+  .vinyl-label span{
+    font-family:"Fraunces", serif;
+    font-size: 0.62rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgba(11,12,20,0.85);
+    font-weight: 600;
+  }
+  .vinyl-label::after{
+    content:"";
+    position:absolute;
+    width:10px; height:10px;
+    background: #0b0c14;
+    border-radius:50%;
+  }
+  @keyframes spin{ to{ transform: rotate(360deg); } }
+
+  .tonearm{
+    position:absolute;
+    top: -6%;
+    right: 4%;
+    width: 14px; height: 46%;
+    transform-origin: top center;
+    transform: rotate(-24deg);
+    transition: transform .6s cubic-bezier(.4,0,.2,1);
+  }
+  .vinyl-stage:hover .tonearm{ transform: rotate(-4deg); }
+  .tonearm .rod{
+    width: 4px; height:100%; margin: 0 auto;
+    background: linear-gradient(var(--dim), #3a3a45);
+    border-radius: 4px;
+  }
+  .tonearm .head{
+    width: 16px; height: 16px; border-radius: 4px;
+    background: var(--amber);
+    margin: -4px auto 0;
+  }
+
+  /* ---------- SECCIONES ---------- */
+  section{ padding: 90px 0; border-top: 1px solid var(--line); }
+
+  .section-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-end;
+    gap: 20px;
+    margin-bottom: 48px;
+    flex-wrap: wrap;
+  }
+  .section-head h2{
+    font-family:"Fraunces", serif;
+    font-weight: 500;
+    font-size: clamp(2rem, 4vw, 2.8rem);
+    margin:0;
+  }
+  .section-num{
+    font-size: 0.8rem;
+    color: var(--dim);
+    letter-spacing: 0.08em;
+  }
+
+  /* about */
+  .about-grid{
+    display:grid;
+    grid-template-columns: 0.9fr 1.1fr;
+    gap: 60px;
+    align-items:start;
+  }
+  blockquote{
+    font-family:"Fraunces", serif;
+    font-style: italic;
+    font-weight: 300;
+    font-size: 1.7rem;
+    line-height: 1.5;
+    color: var(--cream);
+    margin: 0;
+    border-left: 2px solid var(--rose);
+    padding-left: 26px;
+  }
+  .about-grid p{
+    color: var(--dim);
+    line-height: 1.75;
+    font-size: 1rem;
+    margin: 0 0 18px;
+  }
+
+  /* tracklist */
+  .tracklist{
+    border-top: 1px solid var(--line);
+  }
+  .track{
+    display:grid;
+    grid-template-columns: 40px 1fr auto auto;
+    align-items:center;
+    gap: 24px;
+    padding: 20px 4px;
+    border-bottom: 1px solid var(--line);
+    transition: background .25s ease;
+    cursor: default;
+  }
+  .track:hover{ background: rgba(242,239,233,0.03); }
+  .track .idx{
+    font-size: 0.8rem;
+    color: var(--dim);
+    font-variant-numeric: tabular-nums;
+  }
+  .track .info .name{
+    font-family: "Fraunces", serif;
+    font-size: 1.15rem;
+    font-weight: 500;
+    margin-bottom: 4px;
+  }
+  .track .info .tag{
+    font-size: 0.78rem;
+    color: var(--dim);
+    letter-spacing: 0.03em;
+  }
+  .track .wave{
+    display:flex; align-items:flex-end; gap:3px; height: 22px;
+    opacity: 0.45;
+    transition: opacity .25s;
+  }
+  .track:hover .wave{ opacity: 1; }
+  .track .wave span{
+    width:3px; border-radius: 2px;
+    background: var(--amber);
+    animation: eq 1.4s ease-in-out infinite;
+  }
+  .track .wave span:nth-child(odd){ animation-duration: 1.1s; }
+  .track .wave span:nth-child(3n){ animation-delay: .3s; }
+  .track .time{
+    font-size: 0.85rem;
+    color: var(--dim);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* giras */
+  .dates{ display:flex; flex-direction:column; }
+  .date-row{
+    display:grid;
+    grid-template-columns: 120px 1fr auto auto;
+    align-items:center;
+    gap: 24px;
+    padding: 22px 4px;
+    border-bottom: 1px solid var(--line);
+  }
+  .date-row .d{
+    font-family:"Fraunces", serif;
+    font-size: 1.1rem;
+    color: var(--amber);
+  }
+  .date-row .city{ font-weight: 500; font-size: 1.05rem; }
+  .date-row .venue{ color: var(--dim); font-size: 0.85rem; }
+  .date-row .status{
+    font-size: 0.75rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--dim);
+    justify-self: end;
+  }
+  .date-row .status.pocas{ color: var(--rose); }
+
+  /* newsletter / footer */
+  footer{
+    border-top: 1px solid var(--line);
+    padding: 80px 0 40px;
+  }
+  .footer-grid{
+    display:grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 60px;
+    margin-bottom: 60px;
+  }
+  footer h2{
+    font-family:"Fraunces", serif;
+    font-weight: 500;
+    font-size: 2.2rem;
+    margin: 0 0 16px;
+  }
+  footer p{ color: var(--dim); line-height: 1.6; max-width: 42ch; }
+
+  .signup{
+    display:flex;
+    border-bottom: 1px solid var(--line-strong);
+    padding-bottom: 14px;
+    margin-top: 30px;
+    max-width: 420px;
+  }
+  .signup input{
+    flex:1;
+    background: transparent;
+    border: none;
+    color: var(--cream);
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 1rem;
+    padding: 8px 4px;
+  }
+  .signup input::placeholder{ color: var(--dim); }
+  .signup input:focus{ outline: none; }
+  .signup button{
+    background: none;
+    border: none;
+    color: var(--amber);
+    font-size: 0.85rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    cursor: pointer;
+    padding: 8px 4px;
+  }
+  .signup button:hover{ color: var(--cream); }
+
+  .social-col{ display:flex; flex-direction:column; gap: 14px; justify-content:flex-end; }
+  .social-col a{
+    color: var(--dim);
+    font-size: 0.95rem;
+    display:flex; align-items:center; gap:8px;
+    transition: color .2s;
+  }
+  .social-col a:hover{ color: var(--cream); }
+
+  .fine{
+    display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px;
+    color: var(--dim); font-size: 0.75rem;
+    padding-top: 30px; border-top: 1px solid var(--line);
+  }
+
+  /* responsive */
+  @media (max-width: 860px){
+    .hero{ grid-template-columns: 1fr; padding-top: 60px; }
+    .vinyl-stage{ order: -1; margin-bottom: 20px; }
+    .about-grid{ grid-template-columns: 1fr; }
+    .footer-grid{ grid-template-columns: 1fr; }
+    .nav-links{ display:none; }
+    .track{ grid-template-columns: 30px 1fr auto; }
+    .track .wave{ display:none; }
+    .date-row{ grid-template-columns: 1fr; gap: 6px; }
+    .date-row .status{ justify-self:start; }
+    .wrap{ padding: 0 20px; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .vinyl, .eyebrow .bars span, .track .wave span{ animation: none !important; }
+    html{ scroll-behavior: auto; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <nav>
+      <div class="logo"><span class="logo-dot"></span>Luna Marea</div>
+      <div class="nav-links">
+        <a href="#sobre">Sobre</a>
+        <a href="#musica">Música</a>
+        <a href="#giras">Giras</a>
+        <a href="#contacto">Contacto</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="hero" style="border-top:none; padding-top:70px;">
+    <div class="wrap" style="display:contents;">
+      <div>
+        <div class="eyebrow">
+          <span class="bars"><span></span><span></span><span></span><span></span></span>
+          En vivo desde el estudio · 92.4 FM
+        </div>
+        <h1 class="title">Sonidos para<br>la <em>marea baja.</em></h1>
+        <p class="lead">Dream-pop y sintetizadores para las horas en que la ciudad se queda callada. Nuevo álbum, <em>Radio Nocturna</em>, disponible ahora en todas las plataformas.</p>
+        <div class="btn-row">
+          <a href="#musica" class="btn btn-primary">Escuchar el álbum</a>
+          <a href="#giras" class="btn btn-ghost">Ver fechas de gira</a>
+        </div>
+      </div>
+      <div class="vinyl-stage">
+        <div class="tonearm"><div class="rod"></div><div class="head"></div></div>
+        <div class="vinyl">
+          <div class="vinyl-label"><span>Radio<br>Nocturna</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="sobre">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>Sobre el proyecto</h2>
+        <span class="section-num">01 — Biografía</span>
+      </div>
+      <div class="about-grid">
+        <blockquote>“Grabamos de noche porque el silencio de afuera se mete en las canciones.”</blockquote>
+        <div>
+          <p>Luna Marea nació en 2019 como un proyecto de un solo cuarto: una grabadora, un sintetizador prestado y horas de insomnio. Desde entonces, el sonido se ha construido alrededor de texturas cálidas, cintas envejecidas y letras que hablan de ciudades a las tres de la mañana.</p>
+          <p>Su tercer álbum, <em>Radio Nocturna</em>, fue grabado en una antigua estación de radio junto al mar, usando el equipo original de transmisión como parte del instrumental. El resultado es un disco que suena como una señal que casi se pierde, pero nunca se apaga del todo.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="musica">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>Radio Nocturna</h2>
+        <span class="section-num">02 — Tracklist · 2026</span>
+      </div>
+      <div class="tracklist">
+        <div class="track">
+          <span class="idx">01</span>
+          <div class="info"><div class="name">Marea Baja</div><div class="tag">Apertura · sintetizador cálido</div></div>
+          <div class="wave"><span style="height:6px"></span><span style="height:14px"></span><span style="height:9px"></span><span style="height:18px"></span><span style="height:7px"></span></div>
+          <span class="time">3:42</span>
+        </div>
+        <div class="track">
+          <span class="idx">02</span>
+          <div class="info"><div class="name">Ciudad Fantasma</div><div class="tag">Con coros de cinta</div></div>
+          <div class="wave"><span style="height:10px"></span><span style="height:16px"></span><span style="height:6px"></span><span style="height:12px"></span><span style="height:8px"></span></div>
+          <span class="time">4:15</span>
+        </div>
+        <div class="track">
+          <span class="idx">03</span>
+          <div class="info"><div class="name">Vértigo Azul</div><div class="tag">Instrumental</div></div>
+          <div class="wave"><span style="height:8px"></span><span style="height:12px"></span><span style="height:17px"></span><span style="height:9px"></span><span style="height:6px"></span></div>
+          <span class="time">2:58</span>
+        </div>
+        <div class="track">
+          <span class="idx">04</span>
+          <div class="info"><div class="name">Sal y Neón</div><div class="tag">Sencillo principal</div></div>
+          <div class="wave"><span style="height:14px"></span><span style="height:7px"></span><span style="height:11px"></span><span style="height:16px"></span><span style="height:9px"></span></div>
+          <span class="time">3:29</span>
+        </div>
+        <div class="track">
+          <span class="idx">05</span>
+          <div class="info"><div class="name">92.4 FM</div><div class="tag">Cierre · voz y estática</div></div>
+          <div class="wave"><span style="height:9px"></span><span style="height:15px"></span><span style="height:8px"></span><span style="height:13px"></span><span style="height:6px"></span></div>
+          <span class="time">5:07</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="giras">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>Próximas fechas</h2>
+        <span class="section-num">03 — Gira Radio Nocturna</span>
+      </div>
+      <div class="dates">
+        <div class="date-row">
+          <span class="d">14 SEP</span>
+          <div><div class="city">Bogotá, CO</div><div class="venue">Teatro El Ensueño</div></div>
+          <span class="status pocas">Pocas entradas</span>
+          <a href="#" class="btn btn-ghost" style="padding:8px 18px;">Entradas</a>
+        </div>
+        <div class="date-row">
+          <span class="d">22 SEP</span>
+          <div><div class="city">Ciudad de México, MX</div><div class="venue">Salón Marea</div></div>
+          <span class="status">Disponible</span>
+          <a href="#" class="btn btn-ghost" style="padding:8px 18px;">Entradas</a>
+        </div>
+        <div class="date-row">
+          <span class="d">03 OCT</span>
+          <div><div class="city">Buenos Aires, AR</div><div class="venue">Club Nocturno</div></div>
+          <span class="status">Disponible</span>
+          <a href="#" class="btn btn-ghost" style="padding:8px 18px;">Entradas</a>
+        </div>
+        <div class="date-row">
+          <span class="d">18 OCT</span>
+          <div><div class="city">Madrid, ES</div><div class="venue">Sala Radiofónica</div></div>
+          <span class="status pocas">Últimas entradas</span>
+          <a href="#" class="btn btn-ghost" style="padding:8px 18px;">Entradas</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer id="contacto">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div>
+        <h2>Sintoniza la señal.</h2>
+        <p>Recibe primero los nuevos lanzamientos, fechas de gira y sesiones acústicas directo a tu correo.</p>
+        <form class="signup" onsubmit="event.preventDefault(); this.querySelector('button').textContent='Listo ✓';">
+          <input type="email" placeholder="tu@correo.com" required aria-label="Correo electrónico">
+          <button type="submit">Suscribirme</button>
+        </form>
+      </div>
+      <div class="social-col">
+        <a href="#">Instagram</a>
+        <a href="#">Spotify</a>
+        <a href="#">YouTube</a>
+        <a href="#">Bandcamp</a>
+      </div>
+    </div>
+    <div class="fine">
+      <span>© 2026 Luna Marea. Todos los derechos reservados.</span>
+      <span>Grabado junto al mar.</span>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
